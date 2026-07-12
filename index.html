@@ -1,0 +1,418 @@
+
+Weekly journal · HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Journal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c1b1a;
+    --paper:#faf7f0;
+    --paper-line:#e4ddca;
+    --teal:#3e7c6b;
+    --teal-deep:#2c5a4d;
+    --amber:#e8a33d;
+    --rust:#b5533c;
+    --muted:#8a8578;
+    --shadow: 0 1px 2px rgba(28,27,26,0.06), 0 8px 24px rgba(28,27,26,0.08);
+  }
+ 
+  *{ box-sizing:border-box; }
+ 
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--ink);
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(62,124,107,0.15), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(232,163,61,0.10), transparent 45%);
+    font-family:'Inter', sans-serif;
+    color:var(--ink);
+    padding: 32px 16px 80px;
+  }
+ 
+  .wrap{ max-width: 760px; margin: 0 auto; }
+ 
+  /* ---- Header ---- */
+  header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding: 0 4px;
+  }
+  .brand-eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color: var(--amber);
+    margin: 0 0 6px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: clamp(28px, 5vw, 40px);
+    color: var(--paper);
+    margin:0;
+    line-height:1.05;
+  }
+  .week-nav{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .week-range{
+    font-family:'Space Mono', monospace;
+    font-size:13px;
+    color: var(--paper);
+    opacity:0.75;
+    white-space:nowrap;
+  }
+  .nav-btn{
+    width:34px; height:34px;
+    border-radius:50%;
+    border:1px solid rgba(250,247,240,0.25);
+    background: rgba(250,247,240,0.06);
+    color:var(--paper);
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .nav-btn:hover{ background: rgba(250,247,240,0.16); }
+  .nav-btn:active{ transform: scale(0.92); }
+  .today-btn{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    color: var(--ink);
+    background: var(--amber);
+    border:none;
+    border-radius:20px;
+    padding:7px 12px;
+    cursor:pointer;
+    letter-spacing:0.03em;
+  }
+  .today-btn:hover{ filter:brightness(1.08); }
+ 
+  /* ---- Notebook ---- */
+  .notebook{
+    position:relative;
+    padding-left: 26px;
+  }
+  .spine{
+    position:absolute;
+    left:8px; top:6px; bottom:6px;
+    width:2px;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(250,247,240,0.35) 0px,
+      rgba(250,247,240,0.35) 6px,
+      transparent 6px,
+      transparent 16px
+    );
+  }
+  .spine::before, .spine::after{ content:none; }
+ 
+  .day-card{
+    position:relative;
+    background: var(--paper);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+    display:flex;
+    overflow:hidden;
+    border: 1px solid rgba(28,27,26,0.05);
+  }
+ 
+  .day-card::before{
+    content:"";
+    position:absolute;
+    left:-6px; top:14px;
+    width:12px; height:12px;
+    border-radius:50%;
+    background: var(--ink);
+    box-shadow: 0 24px 0 var(--ink), 0 48px 0 var(--ink);
+    opacity:0.9;
+  }
+  .day-card.short::before{ box-shadow:none; }
+ 
+  .tab{
+    flex: 0 0 64px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:2px;
+    padding: 14px 6px;
+    color: var(--paper);
+    position:relative;
+  }
+  .tab .letter{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:22px;
+    line-height:1;
+  }
+  .tab .datenum{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    opacity:0.85;
+  }
+  .tab .month{
+    font-family:'Space Mono', monospace;
+    font-size:9px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    opacity:0.7;
+  }
+ 
+  .body-col{
+    flex:1;
+    padding: 14px 16px 14px 14px;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+  }
+  .body-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:6px;
+    gap:8px;
+  }
+  .day-name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:17px;
+    color: var(--ink);
+  }
+  .save-state{
+    font-family:'Space Mono', monospace;
+    font-size:10px;
+    color: var(--muted);
+    white-space:nowrap;
+    opacity:0;
+    transition: opacity 0.3s ease;
+  }
+  .save-state.show{ opacity:1; }
+ 
+  textarea{
+    width:100%;
+    min-height: 76px;
+    resize: vertical;
+    border:none;
+    outline:none;
+    background: transparent;
+    font-family:'Inter', sans-serif;
+    font-size:14.5px;
+    line-height: 1.55;
+    color: var(--ink);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 23px,
+      var(--paper-line) 23px,
+      var(--paper-line) 24px
+    );
+    padding-top: 2px;
+  }
+  textarea::placeholder{ color: var(--muted); font-style: italic; }
+ 
+  .today-badge{
+    display:inline-block;
+    font-family:'Space Mono', monospace;
+    font-size:9px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    background: var(--amber);
+    color: var(--ink);
+    padding: 2px 7px;
+    border-radius: 20px;
+    margin-left:8px;
+    vertical-align:middle;
+  }
+ 
+  footer{
+    text-align:center;
+    margin-top: 20px;
+    font-family:'Space Mono', monospace;
+    font-size: 11px;
+    color: rgba(250,247,240,0.4);
+  }
+ 
+  @media (max-width: 480px){
+    .tab{ flex-basis: 52px; padding: 12px 4px; }
+    .tab .letter{ font-size:19px; }
+    header{ flex-direction:column; align-items:flex-start; gap:10px; }
+    .week-nav{ align-self:stretch; justify-content:space-between; }
+  }
+ 
+  ::selection{ background: var(--amber); color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="brand-eyebrow">Week at a glance</p>
+      <h1>Weekly&nbsp;Journal</h1>
+    </div>
+    <div class="week-nav">
+      <button class="nav-btn" id="prevWeek" aria-label="Previous week">&#8592;</button>
+      <div>
+        <div class="week-range" id="weekRange">–</div>
+        <div style="text-align:center; margin-top:4px;">
+          <button class="today-btn" id="goToday">Today</button>
+        </div>
+      </div>
+      <button class="nav-btn" id="nextWeek" aria-label="Next week">&#8594;</button>
+    </div>
+  </header>
+ 
+  <div class="notebook">
+    <div class="spine"></div>
+    <div id="days"></div>
+  </div>
+ 
+  <footer>Entries save automatically in this browser, day by day.</footer>
+</div>
+ 
+<script>
+(function(){
+  const DAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const DAY_LETTERS = ["S","M","T","W","T","F","S"];
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+ 
+  // Distinct color per weekday tab, drawn from the palette
+  const DAY_COLORS = ["#b5533c","#3e7c6b","#3e7c6b","#2c5a4d","#2c5a4d","#3e7c6b","#b5533c"];
+ 
+  const daysEl = document.getElementById('days');
+  const weekRangeEl = document.getElementById('weekRange');
+  const prevBtn = document.getElementById('prevWeek');
+  const nextBtn = document.getElementById('nextWeek');
+  const todayBtn = document.getElementById('goToday');
+ 
+  function startOfWeek(d){
+    const date = new Date(d);
+    date.setHours(0,0,0,0);
+    date.setDate(date.getDate() - date.getDay()); // back up to Sunday
+    return date;
+  }
+ 
+  function fmtKey(d){
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,'0') + "-" + String(d.getDate()).padStart(2,'0');
+  }
+ 
+  function isSameDay(a,b){
+    return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+  }
+ 
+  function loadEntry(key){
+    try{
+      const raw = window.localStorage.getItem('journal:' + key);
+      return raw ? raw : "";
+    }catch(e){ return ""; }
+  }
+ 
+  function saveEntry(key, value){
+    try{
+      window.localStorage.setItem('journal:' + key, value);
+      return true;
+    }catch(e){ return false; }
+  }
+ 
+  let currentWeekStart = startOfWeek(new Date());
+ 
+  function render(){
+    daysEl.innerHTML = "";
+    const today = new Date();
+ 
+    // Week range label
+    const weekEnd = new Date(currentWeekStart);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+    const sameMonth = currentWeekStart.getMonth() === weekEnd.getMonth();
+    const rangeText = sameMonth
+      ? `${MONTHS[currentWeekStart.getMonth()]} ${currentWeekStart.getDate()}–${weekEnd.getDate()}, ${weekEnd.getFullYear()}`
+      : `${MONTHS[currentWeekStart.getMonth()]} ${currentWeekStart.getDate()} – ${MONTHS[weekEnd.getMonth()]} ${weekEnd.getDate()}, ${weekEnd.getFullYear()}`;
+    weekRangeEl.textContent = rangeText;
+ 
+    for(let i=0;i<7;i++){
+      const d = new Date(currentWeekStart);
+      d.setDate(d.getDate() + i);
+      const key = fmtKey(d);
+      const isToday = isSameDay(d, today);
+ 
+      const card = document.createElement('div');
+      card.className = 'day-card';
+ 
+      const tab = document.createElement('div');
+      tab.className = 'tab';
+      tab.style.background = DAY_COLORS[i];
+      tab.innerHTML = `
+        <div class="letter">${DAY_LETTERS[i]}</div>
+        <div class="datenum">${d.getDate()}</div>
+        <div class="month">${MONTHS[d.getMonth()]}</div>
+      `;
+ 
+      const bodyCol = document.createElement('div');
+      bodyCol.className = 'body-col';
+ 
+      const top = document.createElement('div');
+      top.className = 'body-top';
+      top.innerHTML = `<span class="day-name">${DAY_NAMES[i]}${isToday ? '<span class="today-badge">Today</span>' : ''}</span><span class="save-state" id="save-${key}">saved</span>`;
+ 
+      const textarea = document.createElement('textarea');
+      textarea.placeholder = "What did you do today?";
+      textarea.value = loadEntry(key);
+      textarea.setAttribute('data-key', key);
+ 
+      let debounceTimer;
+      textarea.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        const stateEl = document.getElementById('save-' + key);
+        if(stateEl){ stateEl.classList.remove('show'); }
+        debounceTimer = setTimeout(() => {
+          saveEntry(key, textarea.value);
+          if(stateEl){
+            stateEl.textContent = 'saved';
+            stateEl.classList.add('show');
+            setTimeout(() => stateEl.classList.remove('show'), 1400);
+          }
+        }, 400);
+      });
+ 
+      bodyCol.appendChild(top);
+      bodyCol.appendChild(textarea);
+ 
+      card.appendChild(tab);
+      card.appendChild(bodyCol);
+      daysEl.appendChild(card);
+    }
+  }
+ 
+  prevBtn.addEventListener('click', () => {
+    currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+    render();
+  });
+  nextBtn.addEventListener('click', () => {
+    currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+    render();
+  });
+  todayBtn.addEventListener('click', () => {
+    currentWeekStart = startOfWeek(new Date());
+    render();
+  });
+ 
+  render();
+})();
+</script>
+</body>
+</html>
+ 
